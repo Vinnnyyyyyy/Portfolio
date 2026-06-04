@@ -1,4 +1,4 @@
-// Modern Portfolio JavaScript - Interactive Features
+
 
 class ModernPortfolio {
     constructor() {
@@ -662,3 +662,35 @@ body:not(.loaded)::after {
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet);
+
+// Initialize EmailJS with your public key
+emailjs.init("YOUR_PUBLIC_KEY"); // 🔁 Replace with your actual public key
+
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const btn = this.querySelector('.submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin"></i>';
+
+    const templateParams = {
+        from_name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+        from_email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value,
+    };
+
+    emailjs.send('service_k78dfec', 'template_nud2ojb', templateParams) // 🔁 Replace IDs
+        .then(() => {
+            document.getElementById('successModal').style.display = 'flex';
+            document.getElementById('contactForm').reset();
+            btn.disabled = false;
+            btn.innerHTML = '<span>Send Message</span><i class="fas fa-paper-plane"></i>';
+        })
+        .catch((error) => {
+            alert('Failed to send message. Please try again.');
+            console.error('EmailJS error:', error);
+            btn.disabled = false;
+            btn.innerHTML = '<span>Send Message</span><i class="fas fa-paper-plane"></i>';
+        });
+});
