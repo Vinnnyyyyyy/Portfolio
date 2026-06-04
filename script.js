@@ -1,5 +1,4 @@
 // Modern Portfolio JavaScript - Interactive Features
-emailjs.init("j5EDB971ZAvplCat-");
 
 class ModernPortfolio {
     constructor() {
@@ -358,14 +357,14 @@ class ModernPortfolio {
         }
     }
 
-    // ✅ EmailJS integrated here — replaces the old simulate timeout
     handleFormSubmit(e) {
         e.preventDefault();
-
+        
         const form = e.target;
         const inputs = form.querySelectorAll('input, textarea, select');
         let isFormValid = true;
 
+        // Validate all fields
         inputs.forEach(input => {
             if (!this.validateField(input)) {
                 isFormValid = false;
@@ -377,32 +376,24 @@ class ModernPortfolio {
             return;
         }
 
+        // Show loading state
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         submitBtn.disabled = true;
 
-        const templateParams = {
-            from_name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
-            from_email: document.getElementById('email').value,
-            subject: document.getElementById('subject').value,
-            message: document.getElementById('message').value,
-        };
-
-        emailjs.send('service_k78dfec', 'template_nud2ojb', templateParams)
-            .then(() => {
-                this.showSuccessModal();
-                form.reset();
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                inputs.forEach(input => this.clearFieldError(input));
-            })
-            .catch((error) => {
-                console.error('EmailJS error:', error);
-                this.showNotification('Failed to send message. Please try again.', 'error');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
+        // Simulate form submission
+        setTimeout(() => {
+            this.showSuccessModal();
+            form.reset();
+            
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            // Clear any remaining errors
+            inputs.forEach(input => this.clearFieldError(input));
+        }, 2000);
     }
 
     showSuccessModal() {
