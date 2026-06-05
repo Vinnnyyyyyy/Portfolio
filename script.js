@@ -139,7 +139,7 @@ class ModernPortfolio {
     handleScroll() {
         if (this.isScrolling) return;
 
-        const sections = ['hero', 'about', 'education', 'experience', 'skills', 'projects', 'contact'];
+        const sections = ['hero', 'about','skills', 'projects', 'contact'];
         let currentSection = 'hero';
 
         sections.forEach(sectionId => {
