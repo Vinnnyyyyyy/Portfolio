@@ -376,8 +376,8 @@ body::before {
 /* ── About Section ── */
 .about-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr; /* Simplifies layout to a single vertical column stack */
+  gap: 24px;                  /* Increased gap slightly for better visual breathing room */
   margin-bottom: 2.5rem;
 }
 
@@ -389,6 +389,7 @@ body::before {
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  grid-column: 1 / -1;       /* Ensures both cards take up the full row width and stack */
 }
 
 .about-card::before {
@@ -406,7 +407,9 @@ body::before {
   transform: translateY(-3px);
 }
 
-.about-card:hover::before { opacity: 1; }
+.about-card:hover::before { 
+  opacity: 1; 
+}
 
 .card-icon {
   width: 44px; height: 44px;
@@ -421,8 +424,9 @@ body::before {
   font-size: 18px;
 }
 
+/* Fixed from 4rem to 1.5rem so your titles don't overflow the UI */
 .about-card h3 {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.6rem;
@@ -430,11 +434,49 @@ body::before {
 }
 
 .about-card p {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   line-height: 1.65;
 }
 
+/* ── Technologies & Tools Badges ── */
+/* ── Technologies & Tools Badges ── */
+.tech-badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 1.25rem;
+}
+
+.tech-badge {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* Perfectly spaces the icon from the word */
+  transition: var(--transition);
+}
+
+/* Formats the Font Awesome icons inside your badges */
+.tech-badge i {
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover effects */
+.tech-badge:hover {
+  border-color: var(--border-default);
+  transform: translateY(-2px);
+  cursor: default;
+}
+/* ── Footer Info ── */
 .personal-info {
   display: flex;
   justify-content: center;
@@ -443,9 +485,20 @@ body::before {
   border-top: 1px solid var(--border-subtle);
 }
 
-.info-item { display: flex; gap: 8px; font-size: 0.875rem; }
-.info-item .label { color: var(--text-muted); }
-.info-item .value { color: var(--text-primary); font-weight: 500; }
+.info-item { 
+  display: flex; 
+  gap: 8px; 
+  font-size: 0.875rem; 
+}
+
+.info-item .label { 
+  color: var(--text-muted); 
+}
+
+.info-item .value { 
+  color: var(--text-primary); 
+  font-weight: 500; 
+}
 
 /* ── Education Section ── */
 .education-timeline {
