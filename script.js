@@ -12,7 +12,7 @@ class ModernPortfolio {
         this.typingIndex = 0;
         this.charIndex = 0;
         this.isDeleting = false;
-        
+
         this.init();
     }
 
@@ -81,7 +81,7 @@ class ModernPortfolio {
 
         const type = () => {
             const currentText = this.typingTexts[this.typingIndex];
-            
+
             if (this.isDeleting) {
                 typingElement.textContent = currentText.substring(0, this.charIndex - 1);
                 this.charIndex--;
@@ -112,14 +112,14 @@ class ModernPortfolio {
         if (!section) return;
 
         this.isScrolling = true;
-        
+
         section.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
 
         this.updateActiveNav(sectionId);
-        
+
         setTimeout(() => {
             this.isScrolling = false;
         }, 1000);
@@ -160,13 +160,13 @@ class ModernPortfolio {
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        
+
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('portfolio-theme', newTheme);
-        
+
         const icon = document.querySelector('.mode-toggle i');
         icon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
-        
+
         document.body.style.transition = 'all 0.3s ease';
         setTimeout(() => {
             document.body.style.transition = '';
@@ -176,7 +176,7 @@ class ModernPortfolio {
     loadTheme() {
         const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        
+
         const icon = document.querySelector('.mode-toggle i');
         if (icon) {
             icon.className = savedTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
@@ -186,7 +186,7 @@ class ModernPortfolio {
     // Skill Bars Animation
     animateSkillBars() {
         const skillItems = document.querySelectorAll('.skill-item');
-        
+
         skillItems.forEach(item => {
             const level = item.dataset.level;
             const progressBar = item.querySelector('.skill-fill');
@@ -222,11 +222,11 @@ class ModernPortfolio {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animate-in');
-                    
+
                     if (entry.target.classList.contains('about-card')) {
                         entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
                     }
-                    
+
                     if (entry.target.classList.contains('timeline-card')) {
                         const cards = entry.target.parentElement.querySelectorAll('.timeline-card');
                         cards.forEach((card, index) => {
@@ -247,18 +247,18 @@ class ModernPortfolio {
     // Floating shapes animation
     initFloatingShapes() {
         const shapes = document.querySelectorAll('.shape');
-        
+
         shapes.forEach((shape, index) => {
             const randomX = Math.random() * window.innerWidth;
             const randomY = Math.random() * window.innerHeight;
-            
+
             shape.style.left = randomX + 'px';
             shape.style.top = randomY + 'px';
-            
+
             setInterval(() => {
                 const newX = Math.random() * window.innerWidth;
                 const newY = Math.random() * window.innerHeight;
-                
+
                 shape.style.transition = 'all 8s ease-in-out';
                 shape.style.left = newX + 'px';
                 shape.style.top = newY + 'px';
@@ -270,12 +270,12 @@ class ModernPortfolio {
     setupProjectCards() {
         document.querySelectorAll('.project-card').forEach(card => {
             const overlay = card.querySelector('.project-overlay');
-            
+
             card.addEventListener('mouseenter', () => {
                 if (overlay) overlay.style.opacity = '1';
                 card.style.transform = 'translateY(-10px) scale(1.02)';
             });
-            
+
             card.addEventListener('mouseleave', () => {
                 if (overlay) overlay.style.opacity = '0';
                 card.style.transform = 'translateY(0) scale(1)';
@@ -325,7 +325,7 @@ class ModernPortfolio {
     setupFormValidation() {
         const form = document.getElementById('contactForm');
         const inputs = form.querySelectorAll('input, textarea, select');
-        
+
         inputs.forEach(input => {
             input.addEventListener('blur', () => this.validateField(input));
             input.addEventListener('input', () => this.clearFieldError(input));
@@ -384,7 +384,7 @@ class ModernPortfolio {
 
     handleFormSubmit(e) {
         e.preventDefault();
-        
+
         const form = e.target;
         const inputs = form.querySelectorAll('input, textarea, select');
         let isFormValid = true;
@@ -437,11 +437,11 @@ class ModernPortfolio {
             <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
             <span>${message}</span>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         setTimeout(() => notification.classList.add('show'), 10);
-        
+
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
@@ -475,7 +475,7 @@ function addParallaxEffect() {
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
         const parallaxElements = document.querySelectorAll('.parallax-bg');
-        
+
         parallaxElements.forEach(element => {
             const speed = element.dataset.speed || 0.5;
             element.style.transform = `translateY(${scrolled * speed}px)`;
@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const portfolio = new ModernPortfolio();
     addSmoothScrolling();
     addParallaxEffect();
-    
+
     setTimeout(() => {
         document.body.classList.add('loaded');
     }, 1000);
