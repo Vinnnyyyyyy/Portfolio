@@ -24,6 +24,9 @@ class ModernPortfolio {
         this.initFloatingShapes();
         this.setupFormValidation();
         this.loadTheme();
+        window.addEventListener('load', () => {
+            this.setupProjectSliders();
+        });
     }
 
     setupEventListeners() {
@@ -54,7 +57,7 @@ class ModernPortfolio {
         // Smooth scroll for hero buttons
         document.querySelectorAll('.glass-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                if (btn.onclick) return; // Skip if has custom onclick
+                if (btn.onclick) return;
                 e.preventDefault();
                 const href = btn.getAttribute('href') || btn.dataset.section;
                 if (href && href.startsWith('#')) {
@@ -62,9 +65,6 @@ class ModernPortfolio {
                 }
             });
         });
-
-        // Project card interactions
-        this.setupProjectCards();
 
         // Skill bars animation trigger
         window.addEventListener('scroll', () => this.checkSkillBarsVisibility());
@@ -118,7 +118,6 @@ class ModernPortfolio {
             block: 'start'
         });
 
-        // Update active navigation
         this.updateActiveNav(sectionId);
         
         setTimeout(() => {
@@ -139,7 +138,7 @@ class ModernPortfolio {
     handleScroll() {
         if (this.isScrolling) return;
 
-        const sections = ['hero', 'about','skills', 'projects', 'contact'];
+        const sections = ['hero', 'about', 'skills', 'projects', 'contact'];
         let currentSection = 'hero';
 
         sections.forEach(sectionId => {
@@ -165,11 +164,9 @@ class ModernPortfolio {
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('portfolio-theme', newTheme);
         
-        // Update icon
         const icon = document.querySelector('.mode-toggle i');
         icon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
         
-        // Add smooth transition effect
         document.body.style.transition = 'all 0.3s ease';
         setTimeout(() => {
             document.body.style.transition = '';
@@ -226,7 +223,6 @@ class ModernPortfolio {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animate-in');
                     
-                    // Special animations for different elements
                     if (entry.target.classList.contains('about-card')) {
                         entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
                     }
@@ -243,7 +239,6 @@ class ModernPortfolio {
             });
         }, observerOptions);
 
-        // Observe elements for animations
         document.querySelectorAll('.about-card, .timeline-card, .exp-card, .project-card, .contact-card').forEach(el => {
             observer.observe(el);
         });
@@ -260,7 +255,6 @@ class ModernPortfolio {
             shape.style.left = randomX + 'px';
             shape.style.top = randomY + 'px';
             
-            // Add random movement
             setInterval(() => {
                 const newX = Math.random() * window.innerWidth;
                 const newY = Math.random() * window.innerHeight;
@@ -278,17 +272,51 @@ class ModernPortfolio {
             const overlay = card.querySelector('.project-overlay');
             
             card.addEventListener('mouseenter', () => {
-                if (overlay) {
-                    overlay.style.opacity = '1';
-                }
+                if (overlay) overlay.style.opacity = '1';
                 card.style.transform = 'translateY(-10px) scale(1.02)';
             });
             
             card.addEventListener('mouseleave', () => {
-                if (overlay) {
-                    overlay.style.opacity = '0';
-                }
+                if (overlay) overlay.style.opacity = '0';
                 card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    }
+
+    // Image Slider
+    setupProjectSliders() {
+        document.querySelectorAll('.slider').forEach(slider => {
+            const slides = slider.querySelector('.slides');
+            const total = slides.children.length;
+            const dotsContainer = slider.querySelector('.slide-dots');
+            let current = 0;
+
+            // Build dots
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('span');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goTo(i));
+                dotsContainer.appendChild(dot);
+            }
+
+            function goTo(index) {
+                current = (index + total) % total;
+                slides.style.transform = `translateX(-${current * 100}%)`;
+                dotsContainer.querySelectorAll('span').forEach((d, i) => {
+                    d.classList.toggle('active', i === current);
+                });
+            }
+
+            slider.querySelector('.prev').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goTo(current - 1);
+            });
+
+            slider.querySelector('.next').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                goTo(current + 1);
             });
         });
     }
@@ -309,7 +337,6 @@ class ModernPortfolio {
         let isValid = true;
         let errorMessage = '';
 
-        // Clear previous errors
         this.clearFieldError(field);
 
         switch (field.type) {
@@ -352,9 +379,7 @@ class ModernPortfolio {
     clearFieldError(field) {
         field.classList.remove('error');
         const errorDiv = field.parentNode.querySelector('.field-error');
-        if (errorDiv) {
-            errorDiv.remove();
-        }
+        if (errorDiv) errorDiv.remove();
     }
 
     handleFormSubmit(e) {
@@ -364,7 +389,6 @@ class ModernPortfolio {
         const inputs = form.querySelectorAll('input, textarea, select');
         let isFormValid = true;
 
-        // Validate all fields
         inputs.forEach(input => {
             if (!this.validateField(input)) {
                 isFormValid = false;
@@ -376,22 +400,16 @@ class ModernPortfolio {
             return;
         }
 
-        // Show loading state
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         submitBtn.disabled = true;
 
-        // Simulate form submission
         setTimeout(() => {
             this.showSuccessModal();
             form.reset();
-            
-            // Reset button
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-            
-            // Clear any remaining errors
             inputs.forEach(input => this.clearFieldError(input));
         }, 2000);
     }
@@ -399,8 +417,6 @@ class ModernPortfolio {
     showSuccessModal() {
         const modal = document.getElementById('successModal');
         modal.style.display = 'flex';
-        
-        // Add entrance animation
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
@@ -409,7 +425,6 @@ class ModernPortfolio {
     closeModal() {
         const modal = document.getElementById('successModal');
         modal.classList.remove('show');
-        
         setTimeout(() => {
             modal.style.display = 'none';
         }, 300);
@@ -425,9 +440,7 @@ class ModernPortfolio {
         
         document.body.appendChild(notification);
         
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
+        setTimeout(() => notification.classList.add('show'), 10);
         
         setTimeout(() => {
             notification.classList.remove('show');
@@ -437,28 +450,22 @@ class ModernPortfolio {
 
     // Resume Download
     downloadResume() {
-        // Create a temporary link for download
         const link = document.createElement('a');
         link.href = 'data:text/plain;charset=utf-8,Alex Morgan - Resume\n\nThis is a demo resume download.';
         link.download = 'Alex_Morgan_Resume.txt';
         link.click();
-        
         this.showNotification('Resume download started!', 'success');
     }
 }
 
 // Additional Utility Functions
 function addSmoothScrolling() {
-    // Enhanced smooth scrolling for older browsers
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
@@ -482,31 +489,22 @@ document.addEventListener('DOMContentLoaded', () => {
     addSmoothScrolling();
     addParallaxEffect();
     
-    // Add loading screen removal
     setTimeout(() => {
         document.body.classList.add('loaded');
     }, 1000);
 });
 
-// Additional CSS animations (add to your CSS)
+// Additional CSS animations
 const additionalStyles = `
-/* Animation Classes */
 .animate-in {
     animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Form Error Styles */
 .form-group input.error,
 .form-group textarea.error,
 .form-group select.error {
@@ -523,11 +521,8 @@ const additionalStyles = `
     gap: 0.25rem;
 }
 
-.field-error::before {
-    content: '⚠';
-}
+.field-error::before { content: '⚠'; }
 
-/* Notification Styles */
 .notification {
     position: fixed;
     top: 20px;
@@ -548,28 +543,14 @@ const additionalStyles = `
     box-shadow: var(--shadow-light);
 }
 
-.notification.show {
-    transform: translateX(0);
-    opacity: 1;
-}
+.notification.show { transform: translateX(0); opacity: 1; }
+.notification.error { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+.notification.success { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
 
-.notification.error {
-    border-color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
-}
-
-.notification.success {
-    border-color: #10b981;
-    background: rgba(16, 185, 129, 0.1);
-}
-
-/* Modal Styles */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.5);
     display: none;
     align-items: center;
@@ -579,9 +560,7 @@ const additionalStyles = `
     transition: opacity 0.3s ease;
 }
 
-.modal.show {
-    opacity: 1;
-}
+.modal.show { opacity: 1; }
 
 .modal-content {
     background: var(--glass-bg);
@@ -596,55 +575,28 @@ const additionalStyles = `
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.modal.show .modal-content {
-    transform: scale(1);
-}
+.modal.show .modal-content { transform: scale(1); }
+.modal-icon { font-size: 4rem; color: #10b981; margin-bottom: 1.5rem; }
+.modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary); }
+.modal-content p { color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
 
-.modal-icon {
-    font-size: 4rem;
-    color: #10b981;
-    margin-bottom: 1.5rem;
-}
-
-.modal-content h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-}
-
-.modal-content p {
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    line-height: 1.6;
-}
-
-/* Loading State */
-body:not(.loaded) {
-    overflow: hidden;
-}
+body:not(.loaded) { overflow: hidden; }
 
 body:not(.loaded)::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: var(--primary-gradient);
     z-index: 10002;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 body:not(.loaded)::after {
     content: '';
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
+    width: 50px; height: 50px;
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid white;
     border-radius: 50%;
@@ -658,7 +610,6 @@ body:not(.loaded)::after {
 }
 `;
 
-// Inject additional styles
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet);
