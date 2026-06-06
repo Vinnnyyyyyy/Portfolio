@@ -591,8 +591,6 @@ body::before {
   gap: 16px;
 }
 
-.skill-item {}
-
 .skill-info {
   display: flex;
   justify-content: space-between;
